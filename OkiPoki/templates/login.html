@@ -1,0 +1,16 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+<h1>Login</h1>
+<form method="POST" action="/login">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.name.label(class_="") }} {{ form.name(size=20, class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.password.label }} {{ form.password(size=20, class_="form-control") }}
+    </div>
+    <button type="submit" value="Login" class="btn btn-default">LogIn</button>
+    <small>{{message}}</small>
+</form>
+{% endblock %}
