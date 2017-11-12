@@ -23,4 +23,4 @@ if __name__ == '__main__':
     print ("running...")
     init_db()
     #app.run(HOST, PORT, debug=True)
-    app.run('0.0.0.0', PORT, debug=True)
+    app.run('0.0.0.0', PORT, debug=False)
