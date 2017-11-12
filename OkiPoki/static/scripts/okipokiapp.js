@@ -1,10 +1,14 @@
-﻿angular.module("okipoki", [/*'angular.filter',*/ /*'ui.bootstrap'*/])
-    //.config(function ($locationProvider) {
-    //    $locationProvider.html5Mode({ enabled: true, requireBase: true });
-    //})
+﻿angular.module("okipoki", [/*'angular.filter',*/ /*'ui.bootstrap'*/ /*'ngRoute'*/])
     .run(function ($rootScope) {
         $rootScope.title = "OkiPoki game";
     })
+    //.config(function ($locationProvider, $routeProvider) {
+    //    //$locationProvider.html5Mode({ enabled: true, requireBase: true });
+    //    $routeProvider
+    //    .when("/login", { templateUrl: "templates/login.html", controller: "" })
+    //    .when("/signup", { templateUrl: "signup.html", controller: "" })
+    //    .otherwise({ redirectTo: "/" });
+    //})
     .factory("getJsonFile", function ($http) {
         var getData = function (jsonFile) {
             return $http.get(jsonFile).then(function (response) { return response.data; });
@@ -129,6 +133,7 @@
         $scope.gameID = params[0].split('=')[1];
         $scope.move = params[3].split('=')[1];
         $scope.Iam = params[4].split('=')[1];
+        $scope.call4rematch = false;
         console.log("--------URL params:---------");
         console.log("gameID: ", $scope.gameID);
         console.log("pl.X:   ", $scope.playerX);
@@ -167,10 +172,14 @@
                                     if (flask.data.response.Draw) {
                                         $rootScope.title = "Draw!";
                                         $rootScope.subtitle = "Well done.";
+                                        if ($scope.playerX == "AI" || $scope.playerO == "AI")
+                                            $scope.call4rematch = true;
                                     }
                                     else {
                                         $rootScope.title = "you lose...";
                                         $rootScope.subtitle = "don't give up!";
+                                        if ($scope.playerX == "AI" || $scope.playerO == "AI")
+                                            $scope.call4rematch = true;
                                     }
                                 }
                             }
@@ -188,6 +197,9 @@
                         },
                         function () { console.log("ERROR (GET): didn't get anything from FLASK?!"); });
                 }
+                else if (false) {
+
+                }
                 else {
                     $scope.pauseGame();
                 }
@@ -195,7 +207,7 @@
             5000);
         };
 
-        $scope.rematch = function () {
+        $scope.ask4rematch = function () {
             $http.post("/invitation", { "message": "rematch", "gameID": $scope.gameID })
             .then(
                 function (flask) {
@@ -210,6 +222,7 @@
                     stop = undefined;
                     $rootScope.title = $scope.playerX + " vs " + $scope.playerO;
                     $scope.getGame();
+                    $scope.call4rematch = false;
                 },
                 function () { console.log('error? Flask didnt respond?'); }
             );

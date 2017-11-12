@@ -11,7 +11,7 @@
     <div class="col-md-6" ng-controller="gameCtrl">
         Current time is:
         <span my-current-time="format"></span>
-        <button class="btn btn-xs btn-primary" ng-disabled="0" ng-click="rematch()">reMatch</button>
+        <button class="btn btn-xs btn-primary" ng-show="call4rematch" ng-click="ask4rematch()">reMatch</button>
         <hr />
         <table class="table table-bordered">
             <tr style="height:5em">

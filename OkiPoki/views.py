@@ -187,10 +187,9 @@ def play():
             print ("failed...")
             return jsonify({"response" : False})
 
-        print("HUMAN:")
-        print("playerX:",game.playerX)
-        print("playerO:",game.playerO)
-        print("I am:   ",data["Iam"])
+        print("playerX    :",game.playerX)
+        print("playerO    :",game.playerO)
+        print("I am(HUMAN):",data["Iam"])
 
         gameWinner = game.gameWon()
         print("winner  :", gameWinner)
@@ -205,20 +204,20 @@ def play():
                 winnerName = game.playerO
                 loserName = game.playerX
             """ result WIN-LOSE """
-            winner = Player.query.filter_by(name=winnerName).first()
-            winner.wins += 1
-            loser = Player.query.filter_by(name=loserName).first()
-            loser.loses += 1
+            #winner = Player.query.filter_by(name=winnerName).first()
+            #winner.wins += 1
+            #loser = Player.query.filter_by(name=loserName).first()
+            #loser.loses += 1
             """ result WIN-LOSE """
             gWon = True
             gOver = True
             gDraw = False
         elif gameOver:
             """ result DRAW """
-            drawX = Player.query.filter_by(name=game.playerX).first()
-            drawX.draws += 1
-            drawO = Player.query.filter_by(name=game.playerO).first()
-            drawO.draws += 1
+            #drawX = Player.query.filter_by(name=game.playerX).first()
+            #drawX.draws += 1
+            #drawO = Player.query.filter_by(name=game.playerO).first()
+            #drawO.draws += 1
             """ result DRAW """
             gWon = False
             gOver = True
@@ -276,7 +275,31 @@ def play():
                 gWon = False
             gOver = True
             gDraw = False
+
+            """ We have a WINNER (and loser) """
+            if gameWinner == "X":
+                winnerName = game.playerX
+                loserName = game.playerO
+            else:
+                winnerName = game.playerO
+                loserName = game.playerX
+            """ result WIN-LOSE """
+            winner = Player.query.filter_by(name=winnerName).first()
+            winner.wins += 1
+            loser = Player.query.filter_by(name=loserName).first()
+            loser.loses += 1
+            """ result WIN-LOSE """
+            db.session.commit()
+            """ update standings """
         elif gameOver:
+            """ result DRAW """
+            drawX = Player.query.filter_by(name=game.playerX).first()
+            drawX.draws += 1
+            drawO = Player.query.filter_by(name=game.playerO).first()
+            drawO.draws += 1
+            """ result DRAW """
+            db.session.commit()
+            """ update standings """
             gWon = False
             gOver = True
             gDraw = True
