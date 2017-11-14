@@ -36,7 +36,6 @@ def signup():
         if form.validate_on_submit():
             if Player.query.filter_by(name=form.name.data).first():
                 return render_template('signup.html', form = form, title = "sign up", year = datetime.now().year, message = "player already exists?")
-                #return jsonify({"response" : {"message" : "user already exist"}})
             else:
                 newPlayer = Player(form.name.data, form.password.data)
                 db.session.add(newPlayer)
@@ -44,7 +43,6 @@ def signup():
                 login_user(newPlayer)
                 loggedUsers.append(newPlayer.name)
                 return redirect ("/")
-                #return jsonify({"response" : {"message" : "new player added..."}})
         else:
             return render_template('signup.html', form = form, title = "sign up", year = datetime.now().year, message = "invalid credentials?")
 
@@ -60,20 +58,16 @@ def login():
             if player:
                 if player in loggedUsers:
                     return render_template('login.html', form=form, title="Login", year=datetime.now().year, message="already signed?")
-                    #return jsonify({"response": {"message" : "already logged?"}})
                 if player.password == form.password.data:
                     player.logged = True
                     db.session.commit()
                     login_user(player)
                     loggedUsers.append(player.name)
                     return redirect('/')
-                    #return jsonify({"response" : {"message" : "player logged..."}})
                 else:
                     return render_template('login.html', form=form, title="Login", year=datetime.now().year, message="wrong password?")
-                    #return jsonify({"response" : {"message" : "wrong password?"}})
             else:
                 return redirect('/signup')
-                #return jsonify({"response" : {"message" : "player doesnt exist?"}})
         else:
             return render_template('login.html', form = form, title = 'login', message = 'invalid?')
 
@@ -191,9 +185,9 @@ def play():
         print("playerO    :",game.playerO)
         print("I am(HUMAN):",data["Iam"])
 
-        gameWinner = game.gameWon()
+        gameWinner = game.gameWon
         print("winner  :", gameWinner)
-        gameOver = game.gameOver()
+        gameOver = game.gameOver
         print("gameover:", gameOver)
         if gameWinner:
             """ We have a WINNER (and loser) """
@@ -204,20 +198,12 @@ def play():
                 winnerName = game.playerO
                 loserName = game.playerX
             """ result WIN-LOSE """
-            #winner = Player.query.filter_by(name=winnerName).first()
-            #winner.wins += 1
-            #loser = Player.query.filter_by(name=loserName).first()
-            #loser.loses += 1
             """ result WIN-LOSE """
             gWon = True
             gOver = True
             gDraw = False
         elif gameOver:
             """ result DRAW """
-            #drawX = Player.query.filter_by(name=game.playerX).first()
-            #drawX.draws += 1
-            #drawO = Player.query.filter_by(name=game.playerO).first()
-            #drawO.draws += 1
             """ result DRAW """
             gWon = False
             gOver = True
@@ -231,7 +217,7 @@ def play():
             
         db.session.commit()
 
-        return jsonify({"response" : {"board" : [game.f1,game.f2,game.f3,game.f4,game.f5,game.f6,game.f7,game.f8,game.f9], "gameOver" : gOver, "Won" : gWon, "Draw" : gDraw, "toplay" : game.player2move}})
+        return jsonify({"response" : {"board" : [game.row1_col1, game.row1_col2, game.row1_col3, game.row2_col1, game.row2_col2, game.row2_col3, game.row3_col1, game.row3_col2, game.row3_col3], "gameOver" : gOver, "Won" : gWon, "Draw" : gDraw, "toplay" : game.player2move}})
 
     elif request.method == "GET":
         data = request.args
@@ -242,7 +228,7 @@ def play():
         print("I am:   ",data["Iam"])
 
         if (game.player2move == "X" and game.playerX == "AI") or (game.player2move == "O" and game.playerO == "AI"):
-            if not game.gameWon() and not game.gameOver():
+            if not game.gameWon and not game.gameOver:
                 if game.playerX == "AI" and data["Iam"] == "O":
                     AI = "X"
                 elif game.playerO == "AI" and data["Iam"] == "X":
@@ -264,9 +250,9 @@ def play():
                 db.session.commit()
                 print("AI has moved...")
         
-        gameWinner = game.gameWon()
+        gameWinner = game.gameWon
         print("winner  :", gameWinner)
-        gameOver = game.gameOver()
+        gameOver = game.gameOver
         print("gameover:", gameOver)
         if gameWinner:
             if gameWinner == data["Iam"]:
@@ -308,7 +294,7 @@ def play():
             gOver = False
             gDraw = False
             
-        return jsonify({"response" : {"board" : [game.f1,game.f2,game.f3,game.f4,game.f5,game.f6,game.f7,game.f8,game.f9], "gameOver" : gOver, "Won" : gWon, "Draw" : gDraw, "toplay" : game.player2move}})
+        return jsonify({"response" : {"board" : [game.row1_col1 ,game.row1_col2, game.row1_col3 ,game.row2_col1, game.row2_col2, game.row2_col3, game.row3_col1, game.row3_col2, game.row3_col3], "gameOver" : gOver, "Won" : gWon, "Draw" : gDraw, "toplay" : game.player2move}})
 
 def gameplay(id, playerX, playerO):
     if id is "new":
@@ -333,7 +319,7 @@ def get_logged_players():
             invited = False
             invitedByMe = False
             for i in invitations:
-                # am I invited by another player?
+                """ am I invited by another player? """
                 if i['from'] == p and i['to'] == current_user.name: 
                     invited = True
                 if i['from'] == current_user.name and i['to'] == p:
@@ -342,14 +328,12 @@ def get_logged_players():
             gameid = None
             accepted = False
             for a in accepted_invitations:
-                # has player accepted my invitation?
+                """ has player accepted my invitation? """
                 if a['from'] == p and a['to'] == current_user.name:
                     accepted = True
                     gameid = a['gameID']
 
             logged.append({ "name" : p, "invited" : invited, "invitedByMe" : invitedByMe, "accepted" : accepted, "gameID" : gameid })
-
-    #print ("logged: ", logged);
     return jsonify({"response" : logged})
 
 @app.route("/standings", methods=["GET"])

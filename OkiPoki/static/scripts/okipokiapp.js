@@ -146,7 +146,7 @@
         $scope.format = 'HH:mm:ss';
         $scope.gameover = false;
 
-        $scope.board = [null, null, null, null, null, null, null, null, null];
+        $scope.board = ["n", "n", "n", "n", "n", "n", "n", "n", "n"];
 
         var stop;
         $scope.getGame = function () {
@@ -234,34 +234,13 @@
                     $rootScope.subtitle = "wait for opponent's move...";
                     console.log('Flask respond to POST:', flask.data);
                     $scope.board = flask.data.response.board;
-                    //$scope.gameover = flask.data.response.gameOver;
-                    //if (flask.data.response.gameOver) {
-                    //    if (flask.data.response.Won) {
-                    //        $rootScope.title = "You WON!";
-                    //        $rootScope.subtitle = "Congratulation!";
-                    //    }
-                    //    else {
-                    //        if (flask.data.response.Draw) {
-                    //            $rootScope.title = "Draw!";
-                    //            $rootScope.subtitle = "Well done.";
-                    //        }
-                    //        else {
-                    //            $rootScope.title = "you lose...";
-                    //            $rootScope.subtitle = "don't give up!";
-                    //        }
-                    //    }
-                    //}
-                    //else {
-                        stop = undefined;
-                        $scope.getGame();
-                    //}
+                    stop = undefined;
+                    $scope.getGame();
                 },
                 function () {
                     console.log('error? Flask didnt respond?');
                 }
             );
-            //$scope.gameover = false;
-            //stop = undefined;
         }
 
         $scope.pauseGame = function () {
@@ -273,7 +252,7 @@
 
         var activeFields = function () {
             for (var i = 0; i < $scope.board.length; i++)
-                if ($scope.board[i] == null)
+                if ($scope.board[i] == "n")
                     $scope.board[i] = '';
         };
 

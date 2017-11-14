@@ -1,48 +1,43 @@
 ﻿from flask_sqlalchemy import SQLAlchemy
-#from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from OkiPoki import app
 
 db = SQLAlchemy(app)
 
-
-#class Player():
-#    __tablename__ = "players"
-#    id = Column(Integer, primary_key=True)
-#    name = Column(String(20), unique=True)
-#    logged = Column(Boolean)
-
-#    def __init__(self, name=None, logged=True):
-#        self.name = name
-
-#    def __repr__(self):
-#        return '<Player %r>' % (self.name)
-
 class Player(db.Model):
-    """description of class"""
+    """description of class
+    """
     name = db.Column(db.String(80), primary_key=True, unique=True)
     password = db.Column(db.String(80))
-    #logged = db.Column(db.Boolean)
-    wins = db.Column(db.Integer)
-    loses = db.Column(db.Integer)
-    draws = db.Column(db.Integer)
+    wins = db.Column(db.Integer, default=0)
+    loses = db.Column(db.Integer, default=0)
+    draws = db.Column(db.Integer, default=0)
 
     def __init__(self, name, password):
+        """Example of docstring on the __init__ method.
+
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+
+        Args:
+            name (str): unique player's name.
+            param2 (str): player's login passwd.
+
+        """
         self.name = name
         self.password = password
-        #self.logged = True
-        self.wins = 0
-        self.loses = 0
-        self.draws = 0
 
     def __repr__(self):
         return '<User %r>' % self.name
 
+    @property
     def is_authenticated(self):
         return True
 
+    @property
     def is_active(self):
         return True
 
+    @property
     def is_anonymous(self):
         return False
 
@@ -53,63 +48,73 @@ class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     playerX = db.Column(db.String(80))
     playerO = db.Column(db.String(80))
-    player2move = db.Column(db.String(1))
-    f1 = db.Column(db.String(1))
-    f2 = db.Column(db.String(1))
-    f3 = db.Column(db.String(1))
-    f4 = db.Column(db.String(1))
-    f5 = db.Column(db.String(1))
-    f6 = db.Column(db.String(1))
-    f7 = db.Column(db.String(1))
-    f8 = db.Column(db.String(1))
-    f9 = db.Column(db.String(1))
+    player2move = db.Column(db.String(1), default="X")
+    row1_col1 = db.Column(db.String(1), default="n")
+    row1_col2 = db.Column(db.String(1), default="n")
+    row1_col3 = db.Column(db.String(1), default="n")
+    row2_col1 = db.Column(db.String(1), default="n")
+    row2_col2 = db.Column(db.String(1), default="n")
+    row2_col3 = db.Column(db.String(1), default="n")
+    row3_col1 = db.Column(db.String(1), default="n")
+    row3_col2 = db.Column(db.String(1), default="n")
+    row3_col3 = db.Column(db.String(1), default="n")
 
     def __init__(self, playerX, playerO):
         self.playerX = playerX
+        """str: player X, first to play"""
         self.playerO = playerO
-        self.player2move = 'X'
-        self.f1 = None
-        self.f2 = None
-        self.f3 = None
-        self.f4 = None
-        self.f5 = None
-        self.f6 = None
-        self.f7 = None
-        self.f8 = None
-        self.f9 = None
+        """str: player O"""
     
     def gameUpdate(self, field, player):
-        if field == "f1" and self.f1 is None:
-            self.f1 = player
+        """
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+
+        Args:
+            field (str): board field to occupy.
+            player (str): player's sign.
+
+        Returns:
+            True on success, False if invalid field is played.
+        """
+        if field == "f1" and self.row1_col1 == "n":
+            self.row1_col1 = player
             return True
-        elif field == "f2" and self.f2 is None:
-            self.f2 = player
+        elif field == "f2" and self.row1_col2 == "n":
+            self.row1_col2 = player
             return True
-        elif field == "f3" and self.f3 is None:
-            self.f3 = player
+        elif field == "f3" and self.row1_col3 == "n":
+            self.row1_col3 = player
             return True
-        elif field == "f4" and self.f4 is None:
-            self.f4 = player
+        elif field == "f4" and self.row2_col1 == "n":
+            self.row2_col1 = player
             return True
-        elif field == "f5" and self.f5 is None:
-            self.f5 = player
+        elif field == "f5" and self.row2_col2 == "n":
+            self.row2_col2 = player
             return True
-        elif field == "f6" and self.f6 is None:
-            self.f6 = player
+        elif field == "f6" and self.row2_col3 == "n":
+            self.row2_col3 = player
             return True
-        elif field == "f7" and self.f7 is None:
-            self.f7 = player
+        elif field == "f7" and self.row3_col1 == "n":
+            self.row3_col1 = player
             return True
-        elif field == "f8" and self.f8 is None:
-            self.f8 = player
+        elif field == "f8" and self.row3_col2 == "n":
+            self.row3_col2 = player
             return True
-        elif field == "f9" and self.f9 is None:
-            self.f9 = player
+        elif field == "f9" and self.row3_col3 == "n":
+            self.row3_col3 = player
             return True
         else:
             return False
 
     def switchPlayer(self):
+        """
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+
+        Returns:
+            next to play sign, False otherwise.
+        """
         if self.player2move == "X":
             self.player2move = "O"
             return True
@@ -118,248 +123,264 @@ class Game(db.Model):
             return True
         else:
             return False
-    
+
+    @property
     def gameWon(self):
-        if  "X" == self.f1 == self.f2 == self.f3 or \
-            "X" == self.f4 == self.f5 == self.f6 or \
-            "X" == self.f7 == self.f8 == self.f9 or \
-            "X" == self.f1 == self.f4 == self.f7 or \
-            "X" == self.f2 == self.f5 == self.f8 or \
-            "X" == self.f3 == self.f6 == self.f9 or \
-            "X" == self.f1 == self.f5 == self.f9 or \
-            "X" == self.f3 == self.f5 == self.f7:
+        """
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+
+        Returns:
+            Winner's sign if game is finished, False otherwise.
+        """
+        if  "X" == self.row1_col1 == self.row1_col2 == self.row1_col3 or \
+            "X" == self.row2_col1 == self.row2_col2 == self.row2_col3 or \
+            "X" == self.row3_col1 == self.row3_col2 == self.row3_col3 or \
+            "X" == self.row1_col1 == self.row2_col1 == self.row3_col1 or \
+            "X" == self.row1_col2 == self.row2_col2 == self.row3_col2 or \
+            "X" == self.row1_col3 == self.row2_col3 == self.row3_col3 or \
+            "X" == self.row1_col1 == self.row2_col2 == self.row3_col3 or \
+            "X" == self.row1_col3 == self.row2_col2 == self.row3_col1:
             return "X"
-        elif "O" == self.f1 == self.f2 == self.f3 or \
-            "O" == self.f4 == self.f5 == self.f6 or \
-            "O" == self.f7 == self.f8 == self.f9 or \
-            "O" == self.f1 == self.f4 == self.f7 or \
-            "O" == self.f2 == self.f5 == self.f8 or \
-            "O" == self.f3 == self.f6 == self.f9 or \
-            "O" == self.f1 == self.f5 == self.f9 or \
-            "O" == self.f3 == self.f5 == self.f7:
+        elif "O" == self.row1_col1 == self.row1_col2 == self.row1_col3 or \
+            "O" == self.row2_col1 == self.row2_col2 == self.row2_col3 or \
+            "O" == self.row3_col1 == self.row3_col2 == self.row3_col3 or \
+            "O" == self.row1_col1 == self.row2_col1 == self.row3_col1 or \
+            "O" == self.row1_col2 == self.row2_col2 == self.row3_col2 or \
+            "O" == self.row1_col3 == self.row2_col3 == self.row3_col3 or \
+            "O" == self.row1_col1 == self.row2_col2 == self.row3_col3 or \
+            "O" == self.row1_col3 == self.row2_col2 == self.row3_col1:
             return "O"
         else:
             return False
 
+    @property
     def gameOver(self):
-        if self.f1 is not None and self.f2 is not None and self.f3 is not None and self.f4 is not None and self.f5 is not None and self.f6 is not None and self.f7 is not None and self.f8 is not None and self.f9 is not None:
+        """
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+
+        Returns:
+            True if no more free fields, False otherwise.
+        """
+        if self.row1_col1 is not 'n' and self.row1_col2 is not 'n' and self.row1_col3 is not 'n' and self.row2_col1 is not 'n' and self.row2_col2 is not 'n' and self.row2_col3 is not 'n' and self.row3_col1 is not 'n' and self.row3_col2 is not 'n' and self.row3_col3 is not 'n':
             return True
         else:
             return False
 
     def AI_finish(self, AI):
-        if AI == self.f1 == self.f2 and self.f3 is None: # 1st row
-            self.f3 = AI
+        if AI == self.row1_col1 == self.row1_col2 and self.row1_col3 == "n": # 1st row
+            self.row1_col3 = AI
             return True
-        elif AI == self.f1 == self.f3 and self.f2 is None: # 1st row
-            self.f2 = AI
+        elif AI == self.row1_col1 == self.row1_col3 and self.row1_col2 == "n": # 1st row
+            self.row1_col2 = AI
             return True
-        elif AI == self.f2 == self.f3 and self.f1 is None: # 1st row
-            self.f1 = AI
+        elif AI == self.row1_col2 == self.row1_col3 and self.row1_col1 == "n": # 1st row
+            self.row1_col1 = AI
             return True
-        elif AI == self.f4 == self.f5 and self.f6 is None: # 2nd row
-            self.f6 = AI
+        elif AI == self.row2_col1 == self.row2_col2 and self.row2_col3 == "n": # 2nd row
+            self.row2_col3 = AI
             return True
-        elif AI == self.f4 == self.f6 and self.f5 is None: # 2nd row
-            self.f5 = AI
+        elif AI == self.row2_col1 == self.row2_col3 and self.row2_col2 == "n": # 2nd row
+            self.row2_col2 = AI
             return True
-        elif AI == self.f5 == self.f6 and self.f4 is None: # 2nd row
-            self.f4 = AI
+        elif AI == self.row2_col2 == self.row2_col3 and self.row2_col1 == "n": # 2nd row
+            self.row2_col1 = AI
             return True
-        elif AI == self.f7 == self.f8 and self.f9 is None: # 3rd row
-            self.f9 = AI
+        elif AI == self.row3_col1 == self.row3_col2 and self.row3_col3 == "n": # 3rd row
+            self.row3_col3 = AI
             return True
-        elif AI == self.f7 == self.f9 and self.f8 is None: # 3rd row
-            self.f8 = AI
+        elif AI == self.row3_col1 == self.row3_col3 and self.row3_col2 == "n": # 3rd row
+            self.row3_col2 = AI
             return True
-        elif AI == self.f8 == self.f9 and self.f7 is None: # 3rd row
-            self.f7 = AI
+        elif AI == self.row3_col2 == self.row3_col3 and self.row3_col1 == "n": # 3rd row
+            self.row3_col1 = AI
             return True
-        elif AI == self.f1 == self.f4 and self.f7 is None: # 1st col
-            self.f7 = AI
+        elif AI == self.row1_col1 == self.row2_col1 and self.row3_col1 == "n": # 1st col
+            self.row3_col1 = AI
             return True
-        elif AI == self.f1 == self.f7 and self.f4 is None: # 1st col
-            self.f4 = AI
+        elif AI == self.row1_col1 == self.row3_col1 and self.row2_col1 == "n": # 1st col
+            self.row2_col1 = AI
             return True
-        elif AI == self.f4 == self.f7 and self.f1 is None: # 1st col
-            self.f1 = AI
+        elif AI == self.row2_col1 == self.row3_col1 and self.row1_col1 == "n": # 1st col
+            self.row1_col1 = AI
             return True
-        elif AI == self.f2 == self.f5 and self.f8 is None: # 2nd col
-            self.f8 = AI
+        elif AI == self.row1_col2 == self.row2_col2 and self.row3_col2 == "n": # 2nd col
+            self.row3_col2 = AI
             return True
-        elif AI == self.f2 == self.f8 and self.f5 is None: # 2nd col
-            self.f5 = AI
+        elif AI == self.row1_col2 == self.row3_col2 and self.row2_col2 == "n": # 2nd col
+            self.row2_col2 = AI
             return True
-        elif AI == self.f5 == self.f8 and self.f2 is None: # 2nd col
-            self.f2 = AI
+        elif AI == self.row2_col2 == self.row3_col2 and self.row1_col2 == "n": # 2nd col
+            self.row1_col2 = AI
             return True
-        elif AI == self.f3 == self.f6 and self.f9 is None: # 3rd col
-            self.f9 = AI
+        elif AI == self.row1_col3 == self.row2_col3 and self.row3_col3 == "n": # 3rd col
+            self.row3_col3 = AI
             return True
-        elif AI == self.f3 == self.f9 and self.f6 is None: # 3rd col
-            self.f6 = AI
+        elif AI == self.row1_col3 == self.row3_col3 and self.row2_col3 == "n": # 3rd col
+            self.row2_col3 = AI
             return True
-        elif AI == self.f6 == self.f9 and self.f3 is None: # 3rd col
-            self.f3 = AI
+        elif AI == self.row2_col3 == self.row3_col3 and self.row1_col3 == "n": # 3rd col
+            self.row1_col3 = AI
             return True
-        elif AI == self.f1 == self.f5 and self.f9 is None: # 1st diag
-            self.f9 = AI
+        elif AI == self.row1_col1 == self.row2_col2 and self.row3_col3 == "n": # 1st diag
+            self.row3_col3 = AI
             return True
-        elif AI == self.f1 == self.f9 and self.f5 is None: # 1st diag
-            self.f5 = AI
+        elif AI == self.row1_col1 == self.row3_col3 and self.row2_col2 == "n": # 1st diag
+            self.row2_col2 = AI
             return True
-        elif AI == self.f5 == self.f9 and self.f1 is None: # 1st diag
-            self.f1 = AI
+        elif AI == self.row2_col2 == self.row3_col3 and self.row1_col1 == "n": # 1st diag
+            self.row1_col1 = AI
             return True
-        elif AI == self.f3 == self.f5 and self.f7 is None: # 2nd diag
-            self.f7 = AI
+        elif AI == self.row1_col3 == self.row2_col2 and self.row3_col1 == "n": # 2nd diag
+            self.row3_col1 = AI
             return True
-        elif AI == self.f3 == self.f7 and self.f5 is None: # 2nd diag
-            self.f5 = AI
+        elif AI == self.row1_col3 == self.row3_col1 and self.row2_col2 == "n": # 2nd diag
+            self.row2_col2 = AI
             return True
-        elif AI == self.f5 == self.f7 and self.f3 is None: # 2nd diag
-            self.f3 = AI
+        elif AI == self.row2_col2 == self.row3_col1 and self.row1_col3 == "n": # 2nd diag
+            self.row1_col3 = AI
             return True
         else:
             return False
 
     def AI_deffensive(self, AI, opponent):
-        if opponent == self.f1 == self.f2 and self.f3 is None: # 1st row
-            self.f3 = AI
+        if opponent == self.row1_col1 == self.row1_col2 and self.row1_col3 == "n": # 1st row
+            self.row1_col3 = AI
             return True
-        elif opponent == self.f1 == self.f3 and self.f2 is None: # 1st row
-            self.f2 = AI
+        elif opponent == self.row1_col1 == self.row1_col3 and self.row1_col2 == "n": # 1st row
+            self.row1_col2 = AI
             return True
-        elif opponent == self.f2 == self.f3 and self.f1 is None: # 1st row
-            self.f1 = AI
+        elif opponent == self.row1_col2 == self.row1_col3 and self.row1_col1 == "n": # 1st row
+            self.row1_col1 = AI
             return True
-        elif opponent == self.f4 == self.f5 and self.f6 is None: # 2nd row
-            self.f6 = AI
+        elif opponent == self.row2_col1 == self.row2_col2 and self.row2_col3 == "n": # 2nd row
+            self.row2_col3 = AI
             return True
-        elif opponent == self.f4 == self.f6 and self.f5 is None: # 2nd row
-            self.f5 = AI
+        elif opponent == self.row2_col1 == self.row2_col3 and self.row2_col2 == "n": # 2nd row
+            self.row2_col2 = AI
             return True
-        elif opponent == self.f5 == self.f6 and self.f4 is None: # 2nd row
-            self.f4 = AI
+        elif opponent == self.row2_col2 == self.row2_col3 and self.row2_col1 == "n": # 2nd row
+            self.row2_col1 = AI
             return True
-        elif opponent == self.f7 == self.f8 and self.f9 is None: # 3rd row
-            self.f9 = AI
+        elif opponent == self.row3_col1 == self.row3_col2 and self.row3_col3 == "n": # 3rd row
+            self.row3_col3 = AI
             return True
-        elif opponent == self.f7 == self.f9 and self.f8 is None: # 3rd row
-            self.f8 = AI
+        elif opponent == self.row3_col1 == self.row3_col3 and self.row3_col2 == "n": # 3rd row
+            self.row3_col2 = AI
             return True
-        elif opponent == self.f8 == self.f9 and self.f7 is None: # 3rd row
-            self.f7 = AI
+        elif opponent == self.row3_col2 == self.row3_col3 and self.row3_col1 == "n": # 3rd row
+            self.row3_col1 = AI
             return True
-        elif opponent == self.f1 == self.f4 and self.f7 is None: # 1st col
-            self.f7 = AI
+        elif opponent == self.row1_col1 == self.row2_col1 and self.row3_col1 == "n": # 1st col
+            self.row3_col1 = AI
             return True
-        elif opponent == self.f1 == self.f7 and self.f4 is None: # 1st col
-            self.f4 = AI
+        elif opponent == self.row1_col1 == self.row3_col1 and self.row2_col1 == "n": # 1st col
+            self.row2_col1 = AI
             return True
-        elif opponent == self.f4 == self.f7 and self.f1 is None: # 1st col
-            self.f1 = AI
+        elif opponent == self.row2_col1 == self.row3_col1 and self.row1_col1 == "n": # 1st col
+            self.row1_col1 = AI
             return True
-        elif opponent == self.f2 == self.f5 and self.f8 is None: # 2nd col
-            self.f8 = AI
+        elif opponent == self.row1_col2 == self.row2_col2 and self.row3_col2 == "n": # 2nd col
+            self.row3_col2 = AI
             return True
-        elif opponent == self.f2 == self.f8 and self.f5 is None: # 2nd col
-            self.f5 = AI
+        elif opponent == self.row1_col2 == self.row3_col2 and self.row2_col2 == "n": # 2nd col
+            self.row2_col2 = AI
             return True
-        elif opponent == self.f5 == self.f8 and self.f2 is None: # 2nd col
-            self.f2 = AI
+        elif opponent == self.row2_col2 == self.row3_col2 and self.row1_col2 == "n": # 2nd col
+            self.row1_col2 = AI
             return True
-        elif opponent == self.f3 == self.f6 and self.f9 is None: # 3rd col
-            self.f9 = AI
+        elif opponent == self.row1_col3 == self.row2_col3 and self.row3_col3 == "n": # 3rd col
+            self.row3_col3 = AI
             return True
-        elif opponent == self.f3 == self.f9 and self.f6 is None: # 3rd col
-            self.f6 = AI
+        elif opponent == self.row1_col3 == self.row3_col3 and self.row2_col3 == "n": # 3rd col
+            self.row2_col3 = AI
             return True
-        elif opponent == self.f6 == self.f9 and self.f3 is None: # 3rd col
-            self.f3 = AI
+        elif opponent == self.row2_col3 == self.row3_col3 and self.row1_col3 == "n": # 3rd col
+            self.row1_col3 = AI
             return True
-        elif opponent == self.f1 == self.f5 and self.f9 is None: # 1st diag
-            self.f9 = AI
+        elif opponent == self.row1_col1 == self.row2_col2 and self.row3_col3 == "n": # 1st diag
+            self.row3_col3 = AI
             return True
-        elif opponent == self.f1 == self.f9 and self.f5 is None: # 1st diag
-            self.f5 = AI
+        elif opponent == self.row1_col1 == self.row3_col3 and self.row2_col2 == "n": # 1st diag
+            self.row2_col2 = AI
             return True
-        elif opponent == self.f5 == self.f9 and self.f1 is None: # 1st diag
-            self.f1 = AI
+        elif opponent == self.row2_col2 == self.row3_col3 and self.row1_col1 == "n": # 1st diag
+            self.row1_col1 = AI
             return True
-        elif opponent == self.f3 == self.f5 and self.f7 is None: # 2nd diag
-            self.f7 = AI
+        elif opponent == self.row1_col3 == self.row2_col2 and self.row3_col1 == "n": # 2nd diag
+            self.row3_col1 = AI
             return True
-        elif opponent == self.f3 == self.f7 and self.f5 is None: # 2nd diag
-            self.f5 = AI
+        elif opponent == self.row1_col3 == self.row3_col1 and self.row2_col2 == "n": # 2nd diag
+            self.row2_col2 = AI
             return True
-        elif opponent == self.f5 == self.f7 and self.f3 is None: # 2nd diag
-            self.f3 = AI
+        elif opponent == self.row2_col2 == self.row3_col1 and self.row1_col3 == "n": # 2nd diag
+            self.row1_col3 = AI
             return True
         else:
             return False
 
     def AI_offensive(self, AI):
-        if self.f5 is None and (self.f1 == AI or self.f2 == AI or self.f3 == AI or self.f4 == AI or self.f6 == AI or self.f7 or self.f8 == AI or self.f9 == AI):
-            self.f5 = AI
+        if self.row2_col2 == "n" and (self.row1_col1 == AI or self.row1_col2 == AI or self.row1_col3 == AI or self.row2_col1 == AI or self.row2_col3 == AI or self.row3_col1 or self.row3_col2 == AI or self.row3_col3 == AI):
+            self.row2_col2 = AI
             return True
-        elif self.f1 is None and self.f5 == AI and self.f9 is None:
-            self.f1 = AI
+        elif self.row1_col1 == "n" and self.row2_col2 == AI and self.row3_col3 == "n":
+            self.row1_col1 = AI
             return True
-        elif self.f1 is None and (self.f2 == AI or self.f3 == AI or self.f4 == AI or self.f7 == AI or self.f5 == AI or self.f9 == AI):
-            self.f1 = AI
+        elif self.row1_col1 == "n" and (self.row1_col2 == AI or self.row1_col3 == AI or self.row2_col1 == AI or self.row3_col1 == AI or self.row2_col2 == AI or self.row3_col3 == AI):
+            self.row1_col1 = AI
             return True
-        elif self.f3 is None and (self.f1 == AI or self.f2 == AI or self.f6 == AI or self.f9 == AI or self.f5 == AI or self.f7 == AI):
-            self.f3 = AI
+        elif self.row1_col3 == "n" and (self.row1_col1 == AI or self.row1_col2 == AI or self.row2_col3 == AI or self.row3_col3 == AI or self.row2_col2 == AI or self.row3_col1 == AI):
+            self.row1_col3 = AI
             return True
-        elif self.f7 is None and (self.f1 == AI or self.f4 == AI or self.f8 == AI or self.f9 == AI or self.f5 == AI or self.f3 == AI):
-            self.f7 = AI
+        elif self.row3_col1 == "n" and (self.row1_col1 == AI or self.row2_col1 == AI or self.row3_col2 == AI or self.row3_col3 == AI or self.row2_col2 == AI or self.row1_col3 == AI):
+            self.row3_col1 = AI
             return True
-        elif self.f9 is None and (self.f3 == AI or self.f6 == AI or self.f7 == AI or self.f8 == AI or self.f5 == AI or self.f1 == AI):
-            self.f9 = AI
+        elif self.row3_col3 == "n" and (self.row1_col3 == AI or self.row2_col3 == AI or self.row3_col1 == AI or self.row3_col2 == AI or self.row2_col2 == AI or self.row1_col1 == AI):
+            self.row3_col3 = AI
             return True
-        elif self.f2 is None and (self.f1 == AI or self.f3 == AI or self.f5 == AI or self.f8 == AI):
-            self.f2 = AI
+        elif self.row1_col2 == "n" and (self.row1_col1 == AI or self.row1_col3 == AI or self.row2_col2 == AI or self.row3_col2 == AI):
+            self.row1_col2 = AI
             return True
-        elif self.f4 is None and (self.f1 == AI or self.f7 == AI or self.f5 == AI or self.f6 == AI):
-            self.f4 = AI
+        elif self.row2_col1 == "n" and (self.row1_col1 == AI or self.row3_col1 == AI or self.row2_col2 == AI or self.row2_col3 == AI):
+            self.row2_col1 = AI
             return True
-        elif self.f6 is None and (self.f3 == AI or self.f9 == AI or self.f5 == AI or self.f4 == AI):
-            self.f6 = AI
+        elif self.row2_col3 == "n" and (self.row1_col3 == AI or self.row3_col3 == AI or self.row2_col2 == AI or self.row2_col1 == AI):
+            self.row2_col3 = AI
             return True
-        elif self.f8 is None and (self.f7 == AI or self.f9 == AI or self.f5 == AI or self.f2 == AI):
-            self.f8 = AI
+        elif self.row3_col2 == "n" and (self.row3_col1 == AI or self.row3_col3 == AI or self.row2_col2 == AI or self.row1_col2 == AI):
+            self.row3_col2 = AI
             return True
         else:
             return False
 
     def AI_justplay(self, AI):
-        if self.f5 is None:
-            self.f5 = AI
+        if self.row2_col2 == "n":
+            self.row2_col2 = AI
             return True
-        elif self.f1 is None:
-            self.f1 = AI
+        elif self.row1_col1 == "n":
+            self.row1_col1 = AI
             return True
-        elif self.f3 is None:
-            self.f3 = AI
+        elif self.row1_col3 == "n":
+            self.row1_col3 = AI
             return True
-        elif self.f7 is None:
-            self.f7 = AI
+        elif self.row3_col1 == "n":
+            self.row3_col1 = AI
             return True
-        elif self.f9 is None:
-            self.f9 = AI
+        elif self.row3_col3 == "n":
+            self.row3_col3 = AI
             return True
-        elif self.f2 is None:
-            self.f2 = AI
+        elif self.row1_col2 == "n":
+            self.row1_col2 = AI
             return True
-        elif self.f4 is None:
-            self.f4 = AI
+        elif self.row2_col1 == "n":
+            self.row2_col1 = AI
             return True
-        elif self.f6 is None:
-            self.f6 = AI
+        elif self.row2_col3 == "n":
+            self.row2_col3 = AI
             return True
-        elif self.f8 is None:
-            self.f8 = AI
+        elif self.row3_col2 == "n":
+            self.row3_col2 = AI
             return True
         else:
             return False
