@@ -103,7 +103,7 @@
             .then(
                 function (flask) {
                     console.log('Flask respond to POST:', flask.data.response);
-                    window.location.href = "/board?gameID=" + flask.data.response.game.gameID + "&playerX=" + flask.data.response.game.playerX + "&playerO=" + flask.data.response.game.playerO + "&move=wait&Iam=X";
+                    window.location.href = "/board?gameID=" + flask.data.response.game.gameID + "&playerX=" + flask.data.response.game.playerX + "&playerO=" + flask.data.response.game.playerO + "&move=wait&Iam=X&opponent=O";
                 },
                 function () { console.log('error? Flask didnt respond?'); }
             );
@@ -113,7 +113,7 @@
             $http.get("/invitation", { params: { "player": p.name, "gameID" : p.gameID } }).then(
                 function (flask) {
                     console.log("Flask respond to GET: ", flask.data.response);
-                    window.location.href = "/board?gameID=" + p.gameID + "&playerX=" + flask.data.response.game.playerX + "&playerO=" + flask.data.response.game.playerO + "&move=wait&Iam=O";
+                    window.location.href = "/board?gameID=" + p.gameID + "&playerX=" + flask.data.response.game.playerX + "&playerO=" + flask.data.response.game.playerO + "&move=wait&Iam=O&opponent=X";
                 },
                 function () {
                     console.log("ERROR()?");
@@ -128,18 +128,20 @@
     })
     .controller("gameCtrl", function ($scope, $http, $interval, $location, $rootScope) {
         var params = location.search.substr(1).split('&');
+        $scope.gameID = params[0].split('=')[1];
         $scope.playerX = params[1].split('=')[1];
         $scope.playerO = params[2].split('=')[1];
-        $scope.gameID = params[0].split('=')[1];
         $scope.move = params[3].split('=')[1];
         $scope.Iam = params[4].split('=')[1];
+        $scope.opponent = params[5].split('=')[1];
         $scope.call4rematch = false;
         console.log("--------URL params:---------");
-        console.log("gameID: ", $scope.gameID);
-        console.log("pl.X:   ", $scope.playerX);
-        console.log("pl.O:   ", $scope.playerO);
-        console.log("move:   ", $scope.move);
-        console.log("I am:   ", $scope.Iam);
+        console.log("gameID:  ", $scope.gameID);
+        console.log("pl.X:    ", $scope.playerX);
+        console.log("pl.O:    ", $scope.playerO);
+        console.log("move:    ", $scope.move);
+        console.log("I am:    ", $scope.Iam);
+        console.log("Opponent:", $scope.opponent);
         console.log("----------------------------");
         $rootScope.title = $scope.playerX + " vs " + $scope.playerO;
 
@@ -157,7 +159,7 @@
                 if (!$scope.gameover) {
                     // get board from Flask
                     var response = $http
-                        .get("/play", { params: { "gameID": $scope.gameID, "Iam" : $scope.Iam } })
+                        .get("/play", { params: { "gameID": $scope.gameID, "Iam" : $scope.Iam, "opponent" : $scope.opponent } })
                         .then(
                         function (flask) {
                             console.log("response from FLASK:", flask.data);
@@ -252,8 +254,8 @@
 
         var activeFields = function () {
             for (var i = 0; i < $scope.board.length; i++)
-                if ($scope.board[i] == "n")
-                    $scope.board[i] = '';
+                if ($scope.board[i] == "")
+                    $scope.board[i] = 'free';
         };
 
         if ($scope.move == "play") {
@@ -261,7 +263,7 @@
             activeFields();
         }
         else {
-            $rootScope.subtitle = "wait for opponent to...";
+            $rootScope.subtitle = "wait for opponent to realize...";
             stop = undefined;
             $scope.getGame();
         }

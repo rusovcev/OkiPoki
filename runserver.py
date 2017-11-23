@@ -4,9 +4,12 @@ This script runs the OkiPoki application using a development server.
 
 from os import environ
 from OkiPoki import app
-from OkiPoki.models import db, Player
+from OkiPoki.players import db, Player
 
 def init_db():
+    '''
+    Note: init database and add AI user, just to have it in standings
+    '''
     db.init_app(app)
     db.app = app
     db.create_all()
@@ -20,7 +23,6 @@ if __name__ == '__main__':
         PORT = int(environ.get('SERVER_PORT', '5555'))
     except ValueError:
         PORT = 5000
-    print ("running...")
+    print("running...")
     init_db()
-    #app.run(HOST, PORT, debug=True)
-    app.run('0.0.0.0', PORT, debug=False)
+    app.run('0.0.0.0', PORT, debug=True)
