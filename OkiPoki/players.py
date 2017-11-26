@@ -83,3 +83,7 @@ def signup_new_player(name, password):
 def update_standings():
     db.session.commit()
     return
+
+def get_standings():
+    """Get standings table."""
+    return Player.query.order_by(Player.wins.desc()).all()

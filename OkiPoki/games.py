@@ -1,6 +1,6 @@
-﻿'''
+﻿"""
 game model v2.
-'''
+"""
 
 import json
 from OkiPoki import db
@@ -12,7 +12,7 @@ class Game(db.Model):
     player_o = db.Column(db.String(80))
     your_move = db.Column(db.String(1), default="X")
     board_size = db.Column(db.Integer, default=3)
-    board_blob = db.Column(db.Text)
+    board_blob = db.Column(db.String())
 
     def __init__(self, size, player_x, player_o):
         '''
@@ -34,7 +34,7 @@ class Game(db.Model):
         return "<Game %r>" % self.game_id
     
     @property
-    def is_over(self):
+    def no_more_free_fields(self):
         board = json.loads(self.board_blob)
         if board.count('') == 0:
             return True
@@ -62,6 +62,7 @@ class Game(db.Model):
         board = json.loads(self.board_blob)
         if board[field_id] == '':
             board[field_id] = player
+            self.board_blob = json.dumps(board)
             return True
         return False
 
@@ -151,21 +152,21 @@ class Game(db.Model):
         """class method to check antidiagonal, same as main."""
         board = json.loads(self.board_blob)
         free_fields = []
-        for row in range(self.board_size):
-            if board[(row + 1) * (self.board_size - 1)] == player:
+        for idx in range(self.board_size):
+            if board[(idx + 1) * (self.board_size - 1)] == player:
                 pass
-            elif board[(row + 1) * (self.board_size - 1)] == '':
-                free_fields.append((row + 1) * (self.board_size - 1))
+            elif board[(idx + 1) * (self.board_size - 1)] == '':
+                free_fields.append((idx + 1) * (self.board_size - 1))
             else:
                 return False
         return free_fields
 
-def get_game(game_id):
+def get_game(game_id:int):
     """function to retrive game by ID."""
     game = Game.query.filter_by(game_id=game_id).first()
     return game
 
-def new_game(board_size, player_x, player_o):
+def new_game(board_size:int, player_x:str, player_o:str):
     """Function to create new game and store it in db.
     
     Returns:
@@ -177,14 +178,21 @@ def new_game(board_size, player_x, player_o):
     db.session.commit()
     if game is None:
         return False
-    print (game.game_id)
     return game.game_id
 
-def current_game_get_board(game_id):
+def current_game_get_board(game_id:int):
+    """Returns game board to list of fields."""
     game = Game.query.filter_by(game_id=game_id).first()
     return json.loads(game.board_blob)
 
-def current_game_update(game_id, field_index, player):
+def current_game_update(game_id:int, field_index:int, player:str):
+    """Update the board.
+
+    Args:
+        game_id: game ID.
+        field_index: board field index to occupy.
+        player: player's sign.
+    """
     game = Game.query.filter_by(game_id=game_id).first()
     board = json.loads(game.board_blob)
     board[field_index] = player
@@ -192,7 +200,8 @@ def current_game_update(game_id, field_index, player):
     db.session.commit()
     return True
 
-def current_game_switch_players(game_id):
+def current_game_switch_players(game_id:int):
+    """Switches the player to take a move."""
     game = Game.query.filter_by(game_id=game_id).first()
     if game.your_move == "X":
         game.your_move = "O"
@@ -201,7 +210,12 @@ def current_game_switch_players(game_id):
     db.session.commit()
     return game.your_move
 
-def check_game_won(game:Game, player):
+def check_game_won(game:Game, player:str):
+    """Function checks if game is won.
+
+    Returns:
+        True if won, otherwise False.
+    """
     if game.is_main_diagonal_won(player) or game.is_antidiagonal_won(player):
         return True
     else:
@@ -210,7 +224,7 @@ def check_game_won(game:Game, player):
                 return True
     return False
 
-def go_for_win_ai(game):
+def go_for_win_ai(game:Game):
     ai = game.your_move
     possible_moves = game.is_main_diagonal_in_danger(ai)
     if possible_moves and len(possible_moves) == 1:
@@ -235,7 +249,12 @@ def go_for_win_ai(game):
             return possible_moves[0]
     return False
 
-def go_defense_ai(game, opponent):
+def go_defense_ai(game:Game, opponent:str):
+    """Function checks if opponent is in chance of winning the game.
+
+        Returns:
+            field to play deffensive, otherwise False.
+    """
     ai = game.your_move
     possible_moves = game.is_main_diagonal_in_danger(opponent)
     if possible_moves and len(possible_moves) == 1:
@@ -260,12 +279,31 @@ def go_defense_ai(game, opponent):
             return possible_moves[0]
     return False
 
-def just_play_some_move_ai(game):
+def go_play_2nd_in_line(game:Game):
+    """Function returns second available field in a row."""
     ai = game.your_move
     for row in range(game.board_size):
         possible_moves = game.is_row_in_danger(row, ai)
         if possible_moves:
-            game.update_board(possible_moves[0], ai)
+            game.update_board(possible_moves[len(possible_moves) - 1], ai)
             db.session.commit()
-            return possible_moves[0]
+            return possible_moves[len(possible_moves) - 1]
+    return False
+
+def go_free_move(game:Game):
+    """
+        Function provides free move.
+
+        Args:
+            game: current game.
+
+        Returns:
+            index of first available field, otherwise false.
+    """
+    board = json.loads(game.board_blob)
+    for idx in range(len(board)):
+        if board[idx] == "":
+            game.update_board(idx, game.your_move)
+            db.session.commit()
+            return idx
     return False

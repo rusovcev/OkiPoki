@@ -218,8 +218,14 @@
                     $scope.playerX = flask.data.response.game.playerX;
                     $scope.playerO = flask.data.response.game.playerO;
                     $scope.move = "wait";
-                    if ($scope.Iam == "X") $scope.Iam = "O";
-                    else $scope.Iam = "X";
+                    if ($scope.Iam == "X") {
+                        $scope.Iam = "O";
+                        $scope.opponent = "X";
+                    }
+                    else {
+                        $scope.Iam = "X";
+                        $scope.opponent = "O";
+                    }
                     $scope.gameover = false;
                     stop = undefined;
                     $rootScope.title = $scope.playerX + " vs " + $scope.playerO;

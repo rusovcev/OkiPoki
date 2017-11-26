@@ -1,7 +1,7 @@
 ﻿import unittest, json
 from unittest import mock
 from OkiPoki.players import Player
-from OkiPoki.games import Game, get_game
+from OkiPoki.games import Game, get_game, go_for_win_ai, go_defense_ai, go_play_2nd_in_line
 
 class Test_test_model_player(unittest.TestCase):
     @mock.patch("OkiPoki.players.Player")
@@ -58,6 +58,7 @@ class Test_model_game(unittest.TestCase):
 
     @mock.patch("OkiPoki.games.Game")
     def test_danger(self, mock_game):
+        """Test if game is to be won/lost by player."""
         test_game = Game(3, "playerX", "playerO")
         test_game.game_id = 1002
         test_game.board_size = 3
@@ -70,6 +71,30 @@ class Test_model_game(unittest.TestCase):
         assert(test_game.is_main_diagonal_in_danger("X") == [4, 8])
         assert(test_game.is_antidiagonal_in_danger("O") == False)
         assert(test_game.is_antidiagonal_in_danger("X") == False)
+
+    @mock.patch("OkiPoki.games.Game")
+    def test_ai_deffensive(self, mock_game):
+        test_game = Game(3, "AI", "Human")
+        test_game.game_id = 42
+        test_game.your_move = "X"
+        test_game.board_blob = json.dumps(['O', '', 'O', 
+                                           '', 'O', '', 
+                                           '', '', ''])
+        assert(test_game.is_antidiagonal_in_danger("O") == [6])
+        assert(test_game.is_main_diagonal_in_danger("O") == [8])
+        assert(go_defense_ai(test_game, "O") == 8)
+        assert(go_for_win_ai(test_game) == False)
+
+    @mock.patch("OkiPoki.games.Game")
+    def test_ai_offensive_move(self, mock_game):
+        test_game = Game(3, "AI", "Human")
+        test_game.game_id = 42
+        test_game.your_move = "X"
+        test_game.board_blob = json.dumps(["", "X", "O", 
+                                           "O", "", "X", 
+                                           "X", "", ""])
+        assert(go_play_2nd_in_line(test_game) == 8)
+
 
 if __name__ == '__main__':
     unittest.main()
