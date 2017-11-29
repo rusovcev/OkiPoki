@@ -206,7 +206,7 @@
                     $scope.pauseGame();
                 }
             },
-            5000);
+            2000);
         };
 
         $scope.ask4rematch = function () {

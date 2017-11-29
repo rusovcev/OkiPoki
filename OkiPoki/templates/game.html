@@ -16,53 +16,62 @@
         <table class="table table-bordered">
             <tr style="height:5em">
                 <td class="text-center">
-                    <div ng-if="board[0] === 'free'" ng-click="movePlayed(0)" class="btn btn-default"><h1>&nbsp;</h1></div>
-                    <div ng-if="board[0] === 'X'" class="btn-default text-center"><h1>X</h1></div>
-                    <div ng-if="board[0] === 'O'" class="btn-default text-center"><h1>O</h1></div>
+                    <div ng-if="board[0] === 'free'" ng-click="movePlayed(0)" class="btn-default"><img src="../static/images/empty.png" /></div>
+                    <div ng-if="board[0] === 'X'" class="btn-default text-center"><img src="../static/images/x.png" /></div>
+                    <div ng-if="board[0] === 'O'" class="btn-default text-center"><img src="../static/images/o.png" /></div>
+                    <div ng-if="board[0] === ''" class="btn-default text-center"><img src="../static/images/empty.png" /></div>
                 </td>
                 <td class="text-center">
-                    <div ng-if="board[1] === 'free'" ng-click="movePlayed(1)" class="btn btn-default"><h1>&nbsp;</h1></div>
-                    <div ng-if="board[1] === 'X'" class="btn-default text-center"><h1>X</h1></div>
-                    <div ng-if="board[1] === 'O'" class="btn-default text-center"><h1>O</h1></div>
+                    <div ng-if="board[1] === 'free'" ng-click="movePlayed(1)" class="btn-default"><img src="../static/images/empty.png" /></div>
+                    <div ng-if="board[1] === 'X'" class="btn-default text-center"><img src="../static/images/x.png" /></div>
+                    <div ng-if="board[1] === 'O'" class="btn-default text-center"><img src="../static/images/o.png" /></div>
+                    <div ng-if="board[1] === ''" class="btn-default text-center"><img src="../static/images/empty.png" /></div>
                 </td>
                 <td class="text-center">
-                    <div ng-if="board[2] === 'free'" ng-click="movePlayed(2)" class="btn btn-default"><h1>&nbsp;</h1></div>
-                    <div ng-if="board[2] === 'X'" class="btn-default text-center"><h1>X</h1></div>
-                    <div ng-if="board[2] === 'O'" class="btn-default text-center"><h1>O</h1></div>
-                </td>
-            </tr>
-            <tr style="height:5em">
-                <td class="text-center">
-                    <div ng-if="board[3] === 'free'" ng-click="movePlayed(3)" class="btn btn-default"><h1>&nbsp;</h1></div>
-                    <div ng-if="board[3] === 'X'" class="btn-default text-center"><h1>X</h1></div>
-                    <div ng-if="board[3] === 'O'" class="btn-default text-center"><h1>O</h1></div>
-                </td>
-                <td class="text-center">
-                    <div ng-if="board[4] === 'free'" ng-click="movePlayed(4)" class="btn btn-default"><h1> &nbsp; </h1></div>
-                    <div ng-if="board[4] === 'X'" class="btn-default text-center"><h1>X</h1></div>
-                    <div ng-if="board[4] === 'O'" class="btn-default text-center"><h1>O</h1></div>
-                </td>
-                <td class="text-center">
-                    <div ng-if="board[5] === 'free'" ng-click="movePlayed(5)" class="btn btn-default"><h1> &nbsp; </h1></div>
-                    <div ng-if="board[5] === 'X'" class="btn-default text-center"><h1>X</h1></div>
-                    <div ng-if="board[5] === 'O'" class="btn-default text-center"><h1>O</h1></div>
+                    <div ng-if="board[2] === 'free'" ng-click="movePlayed(2)" class="btn-default"><img src="../static/images/empty.png" /></div>
+                    <div ng-if="board[2] === 'X'" class="btn-default text-center"><img src="../static/images/x.png" /></div>
+                    <div ng-if="board[2] === 'O'" class="btn-default text-center"><img src="../static/images/o.png" /></div>
+                    <div ng-if="board[2] === ''" class="btn-default text-center"><img src="../static/images/empty.png" /></div>
                 </td>
             </tr>
             <tr style="height:5em">
                 <td class="text-center">
-                    <div ng-if="board[6] === 'free'" ng-click="movePlayed(6)" class="btn btn-default"><h1> &nbsp; </h1></div>
-                    <div ng-if="board[6] === 'X'" class="btn-default text-center"><h1>X</h1></div>
-                    <div ng-if="board[6] === 'O'" class="btn-default text-center"><h1>O</h1></div>
+                    <div ng-if="board[3] === 'free'" ng-click="movePlayed(3)" class="btn-default"><img src="../static/images/empty.png" /></div>
+                    <div ng-if="board[3] === 'X'" class="btn-default text-center"><img src="../static/images/x.png" /></div>
+                    <div ng-if="board[3] === 'O'" class="btn-default text-center"><img src="../static/images/o.png" /></div>
+                    <div ng-if="board[3] === ''" class="btn-default text-center"><img src="../static/images/empty.png" /></div>
                 </td>
                 <td class="text-center">
-                    <div ng-if="board[7] === 'free'" ng-click="movePlayed(7)" class="btn btn-default"><h1> &nbsp; </h1></div>
-                    <div ng-if="board[7] === 'X'" class="btn-default text-center"><h1>X</h1></div>
-                    <div ng-if="board[7] === 'O'" class="btn-default text-center"><h1>O</h1></div>
+                    <div ng-if="board[4] === 'free'" ng-click="movePlayed(4)" class="btn-default"><img src="../static/images/empty.png" /></div>
+                    <div ng-if="board[4] === 'X'" class="btn-default text-center"><img src="../static/images/x.png" /></div>
+                    <div ng-if="board[4] === 'O'" class="btn-default text-center"><img src="../static/images/o.png" /></div>
+                    <div ng-if="board[4] === ''" class="btn-default text-center"><img src="../static/images/empty.png" /></div>
                 </td>
                 <td class="text-center">
-                    <div ng-if="board[8] === 'free'" ng-click="movePlayed(8)" class="btn btn-default"><h1> &nbsp; </h1></div>
-                    <div ng-if="board[8] === 'X'" class="btn-default text-center"><h1>X</h1></div>
-                    <div ng-if="board[8] === 'O'" class="btn-default text-center"><h1>O</h1></div>
+                    <div ng-if="board[5] === 'free'" ng-click="movePlayed(5)" class="btn-default"><img src="../static/images/empty.png" /></div>
+                    <div ng-if="board[5] === 'X'" class="btn-default text-center"><img src="../static/images/x.png" /></div>
+                    <div ng-if="board[5] === 'O'" class="btn-default text-center"><img src="../static/images/o.png" /></div>
+                    <div ng-if="board[5] === ''" class="btn-default text-center"><img src="../static/images/empty.png" /></div>
+                </td>
+            </tr>
+            <tr style="height:5em">
+                <td class="text-center">
+                    <div ng-if="board[6] === 'free'" ng-click="movePlayed(6)" class="btn-default"><img src="../static/images/empty.png" /></div>
+                    <div ng-if="board[6] === 'X'" class="btn-default text-center"><img src="../static/images/x.png" /></div>
+                    <div ng-if="board[6] === 'O'" class="btn-default text-center"><img src="../static/images/o.png" /></div>
+                    <div ng-if="board[6] === ''" class="btn-default text-center"><img src="../static/images/empty.png" /></div>
+                </td>
+                <td class="text-center">
+                    <div ng-if="board[7] === 'free'" ng-click="movePlayed(7)" class="btn-default"><img src="../static/images/empty.png" /></div>
+                    <div ng-if="board[7] === 'X'" class="btn-default text-center"><img src="../static/images/x.png" /></div>
+                    <div ng-if="board[7] === 'O'" class="btn-default text-center"><img src="../static/images/o.png" /></div>
+                    <div ng-if="board[7] === ''" class="btn-default text-center"><img src="../static/images/empty.png" /></div>
+                </td>
+                <td class="text-center">
+                    <div ng-if="board[8] === 'free'" ng-click="movePlayed(8)" class="btn-default"><img src="../static/images/empty.png" /></div>
+                    <div ng-if="board[8] === 'X'" class="btn-default text-center"><img src="../static/images/x.png" /></div>
+                    <div ng-if="board[8] === 'O'" class="btn-default text-center"><img src="../static/images/o.png" /></div>
+                    <div ng-if="board[8] === ''" class="btn-default text-center"><img src="../static/images/empty.png" /></div>
                 </td>
             </tr>
         </table>

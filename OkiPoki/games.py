@@ -48,6 +48,12 @@ class Game(db.Model):
             return True
         return False
 
+    @property
+    def vs_ai(self):
+        if self.player_x == "AI" or self.player_o == "AI":
+            return True
+        return False
+
     def update_board(self, field_id, player):
         """class method to update player's move to the board.
         
@@ -161,12 +167,12 @@ class Game(db.Model):
                 return False
         return free_fields
 
-def get_game(game_id:int):
+def get_game(game_id: int):
     """function to retrive game by ID."""
     game = Game.query.filter_by(game_id=game_id).first()
     return game
 
-def new_game(board_size:int, player_x:str, player_o:str):
+def new_game(board_size: int, player_x: str, player_o: str):
     """Function to create new game and store it in db.
     
     Returns:
@@ -180,12 +186,12 @@ def new_game(board_size:int, player_x:str, player_o:str):
         return False
     return game.game_id
 
-def current_game_get_board(game_id:int):
+def current_game_get_board(game_id: int):
     """Returns game board to list of fields."""
     game = Game.query.filter_by(game_id=game_id).first()
     return json.loads(game.board_blob)
 
-def current_game_update(game_id:int, field_index:int, player:str):
+def current_game_update(game_id: int, field_index: int, player: str):
     """Update the board.
 
     Args:
@@ -200,7 +206,7 @@ def current_game_update(game_id:int, field_index:int, player:str):
     db.session.commit()
     return True
 
-def current_game_switch_players(game_id:int):
+def current_game_switch_players(game_id: int):
     """Switches the player to take a move."""
     game = Game.query.filter_by(game_id=game_id).first()
     if game.your_move == "X":
@@ -210,7 +216,7 @@ def current_game_switch_players(game_id:int):
     db.session.commit()
     return game.your_move
 
-def check_game_won(game:Game, player:str):
+def check_game_won(game: Game, player: str):
     """Function checks if game is won.
 
     Returns:
@@ -224,7 +230,7 @@ def check_game_won(game:Game, player:str):
                 return True
     return False
 
-def go_for_win_ai(game:Game):
+def go_for_win_ai(game: Game):
     ai = game.your_move
     possible_moves = game.is_main_diagonal_in_danger(ai)
     if possible_moves and len(possible_moves) == 1:
@@ -249,7 +255,7 @@ def go_for_win_ai(game:Game):
             return possible_moves[0]
     return False
 
-def go_defense_ai(game:Game, opponent:str):
+def go_defense_ai(game: Game, opponent: str):
     """Function checks if opponent is in chance of winning the game.
 
         Returns:
@@ -279,7 +285,7 @@ def go_defense_ai(game:Game, opponent:str):
             return possible_moves[0]
     return False
 
-def go_play_2nd_in_line(game:Game):
+def go_play_2nd_in_line(game: Game):
     """Function returns second available field in a row."""
     ai = game.your_move
     for row in range(game.board_size):
@@ -290,7 +296,7 @@ def go_play_2nd_in_line(game:Game):
             return possible_moves[len(possible_moves) - 1]
     return False
 
-def go_free_move(game:Game):
+def go_free_move(game: Game):
     """
         Function provides free move.
 

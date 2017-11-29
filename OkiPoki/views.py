@@ -192,6 +192,9 @@ def play():
             game_draw_flag = False
             player = get_player_by_name(current_user.name)
             player.add_win()
+            if current_game.vs_ai:
+                ai = get_player_by_name("AI")
+                ai.add_lose()
             update_standings()
         elif check_game_won(current_game, data["opponent"]):
             game_over_flag = True
@@ -199,6 +202,9 @@ def play():
             game_draw_flag = False
             player = get_player_by_name(current_user.name)
             player.add_lose()
+            if current_game.vs_ai:
+                ai = get_player_by_name("AI")
+                ai.add_win()
             update_standings()
         elif current_game.no_more_free_fields:
             game_over_flag = True
@@ -206,6 +212,9 @@ def play():
             game_draw_flag = True
             player = get_player_by_name(current_user.name)
             player.add_draw()
+            if current_game.vs_ai:
+                ai = get_player_by_name("AI")
+                ai.add_draw()
             update_standings()
         else:
             game_draw_flag = False
