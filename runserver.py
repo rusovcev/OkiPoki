@@ -3,8 +3,8 @@ This script runs the OkiPoki application using a development server.
 """
 
 from os import environ
-from OkiPoki import app
-from OkiPoki.players import db, Player
+from OkiPoki import app, db
+from OkiPoki.mod_auth.models import Player
 
 def init_db():
     '''

@@ -47,6 +47,7 @@ class Player(db.Model):
         return str(self.name)
 
     def add_win(self):
+        """Increase wins by 1."""
         self.wins += 1
         return self.wins
 
@@ -81,6 +82,7 @@ def signup_new_player(name, password):
     return new_player
 
 def update_standings():
+    """Actualy, commit changes to database."""
     db.session.commit()
     return
 

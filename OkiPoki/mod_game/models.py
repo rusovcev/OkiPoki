@@ -54,7 +54,7 @@ class Game(db.Model):
             return True
         return False
 
-    def update_board(self, field_id, player):
+    def save_player_move(self, field_id, player):
         """class method to update player's move to the board.
         
         Args:
@@ -216,7 +216,7 @@ def current_game_switch_players(game_id: int):
     db.session.commit()
     return game.your_move
 
-def check_game_won(game: Game, player: str):
+def check_if_game_won(game: Game, player: str):
     """Function checks if game is won.
 
     Returns:
@@ -230,32 +230,32 @@ def check_game_won(game: Game, player: str):
                 return True
     return False
 
-def go_for_win_ai(game: Game):
+def play_winning_move(game: Game):
     ai = game.your_move
     possible_moves = game.is_main_diagonal_in_danger(ai)
     if possible_moves and len(possible_moves) == 1:
-        game.update_board(possible_moves[0], ai)
+        game.save_player_move(possible_moves[0], ai)
         db.session.commit()
         return possible_moves[0]
     possible_moves = game.is_antidiagonal_in_danger(ai)
     if possible_moves and len(possible_moves) == 1:
-        game.update_board(possible_moves[0], ai)
+        game.save_player_move(possible_moves[0], ai)
         db.session.commit()
         return possible_moves[0]
     for row_or_column in range(game.board_size):
         possible_moves = game.is_row_in_danger(row_or_column, ai)
         if possible_moves and len(possible_moves) == 1:
-            game.update_board(possible_moves[0], ai)
+            game.save_player_move(possible_moves[0], ai)
             db.session.commit()
             return possible_moves[0]
         possible_moves = game.is_column_in_danger(row_or_column, ai)
         if possible_moves and len(possible_moves) == 1:
-            game.update_board(possible_moves[0], ai)
+            game.save_player_move(possible_moves[0], ai)
             db.session.commit()
             return possible_moves[0]
     return False
 
-def go_defense_ai(game: Game, opponent: str):
+def play_deffensive_move(game: Game, opponent: str):
     """Function checks if opponent is in chance of winning the game.
 
         Returns:
@@ -264,39 +264,45 @@ def go_defense_ai(game: Game, opponent: str):
     ai = game.your_move
     possible_moves = game.is_main_diagonal_in_danger(opponent)
     if possible_moves and len(possible_moves) == 1:
-        game.update_board(possible_moves[0], ai)
+        game.save_player_move(possible_moves[0], ai)
         db.session.commit()
         return possible_moves[0]
     possible_moves = game.is_antidiagonal_in_danger(opponent)
     if possible_moves and len(possible_moves) == 1:
-        game.update_board(possible_moves[0], ai)
+        game.save_player_move(possible_moves[0], ai)
         db.session.commit()
         return possible_moves[0]
     for row_or_column in range(game.board_size):
         possible_moves = game.is_row_in_danger(row_or_column, opponent)
         if possible_moves and len(possible_moves) == 1:
-            game.update_board(possible_moves[0], ai)
+            game.save_player_move(possible_moves[0], ai)
             db.session.commit()
             return possible_moves[0]
         possible_moves = game.is_column_in_danger(row_or_column, opponent)
         if possible_moves and len(possible_moves) == 1:
-            game.update_board(possible_moves[0], ai)
+            game.save_player_move(possible_moves[0], ai)
             db.session.commit()
             return possible_moves[0]
     return False
 
-def go_play_2nd_in_line(game: Game):
-    """Function returns second available field in a row."""
+def play_offensive_move(game: Game):
+    """Function returns second available field in a row or column."""
     ai = game.your_move
     for row in range(game.board_size):
         possible_moves = game.is_row_in_danger(row, ai)
-        if possible_moves:
-            game.update_board(possible_moves[len(possible_moves) - 1], ai)
+        if possible_moves and len(possible_moves) == 2:
+            game.save_player_move(possible_moves[len(possible_moves) - 1], ai)
             db.session.commit()
-            return possible_moves[len(possible_moves) - 1]
+            return possible_moves[0] # [len(possible_moves) - 1]
+    for column in range(game.board_size):
+        possible_moves = game.is_column_in_danger(column, ai)
+        if possible_moves and len(possible_moves) == 2:
+            game.save_player_move(possible_moves[len(possible_moves) - 1], ai)
+            db.session.commit()
+            return possible_moves[0] # [len(possible_moves) - 1]
     return False
 
-def go_free_move(game: Game):
+def play_free_move(game: Game):
     """
         Function provides free move.
 
@@ -309,7 +315,7 @@ def go_free_move(game: Game):
     board = json.loads(game.board_blob)
     for idx in range(len(board)):
         if board[idx] == "":
-            game.update_board(idx, game.your_move)
+            game.save_player_move(idx, game.your_move)
             db.session.commit()
             return idx
     return False

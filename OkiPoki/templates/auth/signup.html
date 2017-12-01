@@ -1,0 +1,16 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+    <h1>Sign-up</h1>
+    <form method="POST" action="{{ url_for('auth.signup') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.name.label }} {{ form.name(size=20, class_="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label }} {{ form.password(size=20, class_="form-control") }}
+        </div>
+        <button type="submit" value="Signup" class="btn btn-primary">SignUp</button>
+        <small class="">{{message}}</small>
+    </form>
+{% endblock %}

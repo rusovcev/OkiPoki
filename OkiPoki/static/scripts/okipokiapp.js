@@ -61,7 +61,7 @@
         $scope.standings = [];
         $scope.getStandings = function () {
             $http
-                .get("/standings").then(
+                .get("/auth/standings").then(
                 function (flask) {
                     $scope.standings = flask.data.response;
                 },
@@ -78,7 +78,7 @@
 
         function getLoggedPlayers() {
             $http
-                .get("/logged/players").then(
+                .get("/auth/logged/players").then(
                 function (flask) {
                     $scope.loggedPlayers = flask.data.response;
                     console.log(flask.data.response);
@@ -91,7 +91,7 @@
         stopTime = $interval(getLoggedPlayers, 5000);
 
         $scope.invite = function (p) {
-            $http.post("/invitation", { "message" : "invite", "who": p.name })
+            $http.post("/auth/invitation", { "message" : "invite", "who": p.name })
             .then(
                 function (flask) { console.log('Flask respond to POST:', flask.data.response); },
                 function () { console.log('error? Flask didnt respond?'); }
@@ -99,21 +99,21 @@
         }
 
         $scope.accept = function (p) {
-            $http.post("/invitation", { "message" : "accepted", "from" : p.name })
+            $http.post("/auth/invitation", { "message" : "accepted", "from" : p.name })
             .then(
                 function (flask) {
                     console.log('Flask respond to POST:', flask.data.response);
-                    window.location.href = "/board?gameID=" + flask.data.response.game.gameID + "&playerX=" + flask.data.response.game.playerX + "&playerO=" + flask.data.response.game.playerO + "&move=wait&Iam=X&opponent=O";
+                    window.location.href = "/game/board?gameID=" + flask.data.response.game.gameID + "&playerX=" + flask.data.response.game.playerX + "&playerO=" + flask.data.response.game.playerO + "&move=wait&Iam=X&opponent=O";
                 },
                 function () { console.log('error? Flask didnt respond?'); }
             );
         }
 
         $scope.go2play = function (p) {
-            $http.get("/invitation", { params: { "player": p.name, "gameID" : p.gameID } }).then(
+            $http.get("/auth/invitation", { params: { "player": p.name, "gameID" : p.gameID } }).then(
                 function (flask) {
                     console.log("Flask respond to GET: ", flask.data.response);
-                    window.location.href = "/board?gameID=" + p.gameID + "&playerX=" + flask.data.response.game.playerX + "&playerO=" + flask.data.response.game.playerO + "&move=wait&Iam=O&opponent=X";
+                    window.location.href = "/game/board?gameID=" + p.gameID + "&playerX=" + flask.data.response.game.playerX + "&playerO=" + flask.data.response.game.playerO + "&move=wait&Iam=O&opponent=X";
                 },
                 function () {
                     console.log("ERROR()?");
@@ -148,7 +148,7 @@
         $scope.format = 'HH:mm:ss';
         $scope.gameover = false;
 
-        $scope.board = ["n", "n", "n", "n", "n", "n", "n", "n", "n"];
+        $scope.board = ["", "", "", "", "", "", "", "", ""];
 
         var stop;
         $scope.getGame = function () {
@@ -159,7 +159,7 @@
                 if (!$scope.gameover) {
                     // get board from Flask
                     var response = $http
-                        .get("/play", { params: { "gameID": $scope.gameID, "Iam" : $scope.Iam, "opponent" : $scope.opponent } })
+                        .get("/game/play", { params: { "gameID": $scope.gameID, "Iam" : $scope.Iam, "opponent" : $scope.opponent } })
                         .then(
                         function (flask) {
                             console.log("response from FLASK:", flask.data);
@@ -210,7 +210,7 @@
         };
 
         $scope.ask4rematch = function () {
-            $http.post("/invitation", { "message": "rematch", "gameID": $scope.gameID })
+            $http.post("/auth/invitation", { "message": "rematch", "gameID": $scope.gameID })
             .then(
                 function (flask) {
                     console.log('Flask respond to POST:', flask.data.response);
@@ -229,6 +229,8 @@
                     $scope.gameover = false;
                     stop = undefined;
                     $rootScope.title = $scope.playerX + " vs " + $scope.playerO;
+                    $rootScope.subtitle = "";
+                    $scope.move = "X";
                     $scope.getGame();
                     $scope.call4rematch = false;
                 },
@@ -237,7 +239,7 @@
         }
 
         $scope.movePlayed = function (f) {
-            $http.post("/play", { "gameID" : $scope.gameID, "Iam" : $scope.Iam, "move": f }).then(
+            $http.post("/game/play", { "gameID" : $scope.gameID, "Iam" : $scope.Iam, "move": f }).then(
                 function (flask) {
                     $rootScope.subtitle = "wait for opponent's move...";
                     console.log('Flask respond to POST:', flask.data);
